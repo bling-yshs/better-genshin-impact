@@ -26,6 +26,14 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
+    - name: Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages  # NuGet 默认缓存路径
+        key: nuget-${{ runner.os }}-${{ hashFiles('**/packages.lock.json', '**/*.csproj') }}
+        restore-keys: |
+          nuget-${{ runner.os }}-
+
     - name: 开启 SSH 服务 (Start SSH service)
       if: ${{ inputs.enable_ssh }}
       uses: mxschmitt/action-tmate@v3
