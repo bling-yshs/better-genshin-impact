@@ -25,7 +25,6 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '8.0.x'
-        cache: true
 
     - name: 开启 SSH 服务 (Start SSH service)
       if: ${{ inputs.enable_ssh }}
