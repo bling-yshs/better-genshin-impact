@@ -7,6 +7,12 @@ on:
       - main
   # 手动触发
   workflow_dispatch:
+    inputs:
+      enable_ssh:
+        description: '是否开启 SSH 服务'
+        type: boolean
+        required: true
+        default: false
 
 jobs:
   build:
@@ -19,8 +25,10 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '8.0.x'
+        cache: true
 
     - name: 开启 SSH 服务 (Start SSH service)
+      if: ${{ inputs.enable_ssh }}
       uses: mxschmitt/action-tmate@v3
       timeout-minutes: 15
 
@@ -28,10 +36,11 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      working-directory: Build
+      run: ./setup_build.cmd
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
         name: BetterGI
-        path: ./publish
+        path: Build/BetterGI_*.7z
